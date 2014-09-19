@@ -196,7 +196,7 @@ else ()
     add_library (OpenImageIO SHARED ${libOpenImageIO_srcs})
 endif ()
 
-# Redshift library naming conventions
+# Redshift: library naming conventions
 if (REDSHIFT_USE_LIB_POSTFIX)
     set (REDSHIFT_TOOLSET_POSTFIX "")
     if (CMAKE_GENERATOR_TOOLSET STREQUAL "v100")
@@ -298,6 +298,17 @@ endif(DEFINED OVERRIDE_SHARED_LIBRARY_SUFFIX)
 
 oiio_install_targets (OpenImageIO)
 
+# Redshift: Install PDB files
+IF(MSVC)
+  INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,DEBUG_POSTFIX>.pdb
+    DESTINATION ${BIN_INSTALL_DIR}
+    CONFIGURATIONS Debug
+    )
+  INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,RELWITHDEBINFO_POSTFIX>.pdb
+    DESTINATION ${BIN_INSTALL_DIR}
+    CONFIGURATIONS RelWithDebInfo
+    )
+ENDIF(MSVC)
 
 # Testing
 

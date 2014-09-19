@@ -195,6 +195,31 @@ if (BUILDSTATIC)
 else ()
     add_library (OpenImageIO SHARED ${libOpenImageIO_srcs})
 endif ()
+
+# Redshift library naming conventions
+if (REDSHIFT_USE_LIB_POSTFIX)
+    set (REDSHIFT_TOOLSET_POSTFIX "")
+    if (CMAKE_GENERATOR_TOOLSET STREQUAL "v100")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc100")
+    elseif (CMAKE_GENERATOR_TOOLSET STREQUAL "v90")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc90")
+    else()
+        message( FATAL_ERROR "REDSHIFT_USE_LIB_POSTFIX only supports v100 and v90 toolsets. Current toolset is ${CMAKE_GENERATOR_TOOLSET}" )
+    endif()
+
+    if (REDSHIFT_TOOLSET_POSTFIX)
+        set (REDSHIFT_LIB_POSTFIX "-${OIIO_VERSION_MAJOR}.${OIIO_VERSION_MINOR}.${OIIO_VERSION_PATCH}${OIIO_VERSION_RELEASE_TYPE}-${REDSHIFT_TOOLSET_POSTFIX}")
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            DEBUG_POSTFIX ${REDSHIFT_LIB_POSTFIX}-d
+            RELEASE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELWITHDEBINFO_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELMINSIZE ${REDSHIFT_LIB_POSTFIX}
+            )
+    endif()
+endif()
+#
+
 target_link_libraries (OpenImageIO
                            ${VISIBILITY_COMMAND} ${VISIBILITY_MAP_COMMAND}
                            ${Boost_LIBRARIES})

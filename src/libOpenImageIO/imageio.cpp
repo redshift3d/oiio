@@ -45,6 +45,8 @@
 #include "OpenImageIO/imageio.h"
 #include "imageio_pvt.h"
 
+#include <OpenEXR/ImfThreading.h>
+
 OIIO_NAMESPACE_ENTER
 {
 
@@ -694,6 +696,13 @@ copy_image (int nchannels, int width, int height, int depth,
         }
     }
     return true;
+}
+
+int shutdown_exr_threads ()
+{
+	int ret = Imf::globalThreadCount();
+	Imf::setGlobalThreadCount(0);
+	return ret;
 }
 
 

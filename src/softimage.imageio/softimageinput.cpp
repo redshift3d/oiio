@@ -129,7 +129,7 @@ SoftimageInput::open (const std::string& name, ImageSpec& spec)
     }
 
     // Check whether it has the pic magic number
-    if (m_pic_header.magic != 0x5380f634) {
+    if (m_pic_header.magic != PicFileHeader::kSoftimageMagicNumber) {
         error ("\"%s\" is not a Softimage Pic file, magic number of 0x%X is not Pic",
                m_filename.c_str(), m_pic_header.magic);
                close();

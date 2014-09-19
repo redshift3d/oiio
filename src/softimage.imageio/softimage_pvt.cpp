@@ -74,6 +74,18 @@ PicFileHeader::read_header (FILE* fd)
 }
 
 
+bool
+PicFileHeader::write_header (FILE* fd)
+{
+	// Check if we're running on a little endian processor
+	if (littleendian ())
+		swap_endian();
+
+	int byte_count = fwrite (this, 1, sizeof (PicFileHeader), fd);
+
+	return (byte_count == sizeof (PicFileHeader));
+}
+
 
 std::vector<int>
 ChannelPacket::channels () const

@@ -1332,6 +1332,9 @@ typedef bool (*wrap_impl) (int &coord, int origin, int width);
 // to force correct linkage on some systems
 OIIO_API void _ImageIO_force_link ();
 
+// Redshift
+DLLPUBLIC int shutdown_exr_threads ();
+
 }
 OIIO_NAMESPACE_EXIT
 

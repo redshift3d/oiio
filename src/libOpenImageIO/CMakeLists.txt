@@ -169,6 +169,9 @@ if (EMBEDPLUGINS)
         endif ()
         include_directories (${OPENJPEG_INCLUDE_DIR})
         add_definitions("-DUSE_OPENJPEG")
+        if (LINKSTATIC)
+          add_definitions (-DOPJ_STATIC)
+        endif ()
     else()
         message (STATUS "Jpeg-2000 plugin will not be built")
     endif()
@@ -233,6 +236,31 @@ if (BUILDSTATIC)
 else ()
     add_library (OpenImageIO SHARED ${libOpenImageIO_srcs})
 endif ()
+
+# Redshift: library naming conventions
+if (REDSHIFT_USE_LIB_POSTFIX)
+    set (REDSHIFT_TOOLSET_POSTFIX "")
+    if (CMAKE_GENERATOR_TOOLSET STREQUAL "v100")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc100")
+    elseif (CMAKE_GENERATOR_TOOLSET STREQUAL "v90")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc90")
+    else()
+        message( FATAL_ERROR "REDSHIFT_USE_LIB_POSTFIX only supports v100 and v90 toolsets. Current toolset is ${CMAKE_GENERATOR_TOOLSET}" )
+    endif()
+
+    if (REDSHIFT_TOOLSET_POSTFIX)
+        set (REDSHIFT_LIB_POSTFIX "-${OIIO_VERSION_MAJOR}.${OIIO_VERSION_MINOR}.${OIIO_VERSION_PATCH}${OIIO_VERSION_RELEASE_TYPE}-${REDSHIFT_TOOLSET_POSTFIX}")
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            DEBUG_POSTFIX ${REDSHIFT_LIB_POSTFIX}-d
+            RELEASE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELWITHDEBINFO_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELMINSIZE ${REDSHIFT_LIB_POSTFIX}
+            )
+    endif()
+endif()
+#
+
 target_link_libraries (OpenImageIO
                            ${VISIBILITY_COMMAND} ${VISIBILITY_MAP_COMMAND}
                            ${Boost_LIBRARIES})
@@ -330,6 +358,17 @@ endif(DEFINED OVERRIDE_SHARED_LIBRARY_SUFFIX)
 
 oiio_install_targets (OpenImageIO)
 
+# Redshift: Install PDB files
+IF(MSVC)
+  INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,DEBUG_POSTFIX>.pdb
+    DESTINATION ${BIN_INSTALL_DIR}
+    CONFIGURATIONS Debug
+    )
+  INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,RELWITHDEBINFO_POSTFIX>.pdb
+    DESTINATION ${BIN_INSTALL_DIR}
+    CONFIGURATIONS RelWithDebInfo
+    )
+ENDIF(MSVC)
 
 # Testing
 

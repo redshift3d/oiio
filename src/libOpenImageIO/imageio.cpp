@@ -33,7 +33,14 @@
 
 #include <OpenEXR/half.h>
 #include <OpenEXR/ImathFun.h>
-
+ //////////////////////////////////////////////////////////////////////////
+ // Redshift
+ #if defined(_MSC_VER)
+ #include <boost/locale.hpp>
+ #include <boost/filesystem/path.hpp>
+ #include <boost/filesystem/fstream.hpp>
+ #endif //defined(_MSC_VER)
+//////////////////////////////////////////////////////////////////////////
 #include <boost/scoped_array.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/tss.hpp>
@@ -47,6 +54,8 @@
 #include "OpenImageIO/hash.h"
 #include "OpenImageIO/imageio.h"
 #include "imageio_pvt.h"
+
+#include <OpenEXR/ImfThreading.h>
 
 OIIO_NAMESPACE_BEGIN
 
@@ -732,6 +741,41 @@ copy_image (int nchannels, int width, int height, int depth,
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+// Redshift
+#if defined(_MSC_VER)
+#if 0
+//this doesn't work (can cause crashes on shutdown)
+void redshift_init ()
+{
+    // Create and install global locale
+    std::locale::global(boost::locale::generator().generate(""));
+    // Make boost.filesystem use it
+    boost::filesystem::path::imbue(std::locale());
+}
+#else
+std::locale old_locale;
+void redshift_init ()
+{
+    //imbue a utf8 locale (so that narrow to wide string conversion in boost::filesystem happens as UTF8 -> UTF16
+    old_locale = boost::filesystem::path::imbue(boost::locale::generator().generate(""));
+}
+#endif
+
+void redshift_shutdown ()
+{
+    //shutdown exr threads
+    int ret = Imf::globalThreadCount();
+    Imf::setGlobalThreadCount(0);
+
+    //restore original imbued locale
+    boost::filesystem::path::imbue(old_locale);
+}
+#else //defined(_MSC_VER)
+void redshift_init () {}
+void redshift_shutdown () {}
+#endif //defined(_MSC_VER)
+//////////////////////////////////////////////////////////////////////////
 
 void
 add_dither (int nchannels, int width, int height, int depth,

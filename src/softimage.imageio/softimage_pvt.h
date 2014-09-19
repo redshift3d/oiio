@@ -50,6 +50,7 @@ namespace softimage_pvt
     public:
         // Read pic header from file
         bool read_header (FILE *fd);
+		bool write_header (FILE *fd);
         
         // PIC header
         uint32_t magic; // Softimage magic number
@@ -61,6 +62,8 @@ namespace softimage_pvt
         float ratio; // Pixel aspect ratio
         uint16_t fields; // The scanline setting - No Pictures, Odd, Even or every
         uint16_t pad; // unused
+
+		static const uint32_t kSoftimageMagicNumber = 0x5380f634;
 
     private:
         void swap_endian();

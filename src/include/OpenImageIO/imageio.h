@@ -1552,6 +1552,10 @@ TINYFORMAT_WRAP_FORMAT (void, debugmsg, /**/,
 // to force correct linkage on some systems
 OIIO_API void _ImageIO_force_link ();
 
+// Redshift
+DLLPUBLIC void redshift_init ();
+DLLPUBLIC void redshift_shutdown ();
+
 OIIO_NAMESPACE_END
 
 #endif  // OPENIMAGEIO_IMAGEIO_H

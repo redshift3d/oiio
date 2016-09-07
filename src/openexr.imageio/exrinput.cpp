@@ -334,7 +334,18 @@ OpenEXRInput::OpenEXRInput ()
 bool
 OpenEXRInput::valid_file (const std::string &filename) const
 {
-    return Imf::isOpenExrFile (filename.c_str());
+    // Modified by Redshift for compatibility with UTF-8 strings on Windows
+    #if defined(_MSC_VER)
+        try {
+            OpenEXRInputStream input_stream(filename.c_str());
+            return Imf::isOpenExrFile(input_stream);
+        }
+        catch (const std::exception &e) {
+            return false;
+        }
+    #else //defined(_MSC_VER)
+        return Imf::isOpenExrFile (filename.c_str());
+    #endif //defined(_MSC_VER)
 }
 
 
@@ -348,10 +359,24 @@ OpenEXRInput::open (const std::string &name, ImageSpec &newspec)
         return false;
     }
     bool tiled;
+    // Modified by Redshift for compatibility with UTF-8 strings on Windows
+    #if defined(_MSC_VER)
+        try {
+            OpenEXRInputStream input_stream(name.c_str());
+            if (! Imf::isOpenExrFile (input_stream, tiled)) {
+                error ("\"%s\" is not an OpenEXR file", name.c_str());
+                return false;
+            }
+        }
+        catch (const std::exception &e) {
+            return false;
+        }
+    #else //defined(_MSC_VER)
     if (! Imf::isOpenExrFile (name.c_str(), tiled)) {
         error ("\"%s\" is not an OpenEXR file", name.c_str());
         return false;
     }
+    #endif //defined(_MSC_VER)
 
     pvt::set_exr_threads ();
 

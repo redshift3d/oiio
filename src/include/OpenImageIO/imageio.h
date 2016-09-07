@@ -1333,7 +1333,8 @@ typedef bool (*wrap_impl) (int &coord, int origin, int width);
 OIIO_API void _ImageIO_force_link ();
 
 // Redshift
-DLLPUBLIC int shutdown_exr_threads ();
+DLLPUBLIC void redshift_init ();
+DLLPUBLIC void redshift_shutdown ();
 
 }
 OIIO_NAMESPACE_EXIT

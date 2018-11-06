@@ -581,6 +581,18 @@ PSDInput::open(const std::string& name, ImageSpec& newspec)
     // Setup ImageSpecs and m_channels
     setup();
 
+	//////////////////////////////////////////////////////////////////////////
+	// Redshift
+	//
+	// Add attribute 'oiio:subimagename' to subimage specs
+    m_specs[0].attribute ("oiio:subimagename", "Default Composite");
+	LayerMaskInfo::LayerInfo &layer_info = m_layer_mask_info.layer_info;
+	for (int16_t layer_nbr = 0; layer_nbr < layer_info.layer_count; ++layer_nbr) {
+		Layer &layer = m_layers[layer_nbr];
+		m_specs[layer_nbr+1].attribute ("oiio:subimagename", layer.name);
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     bool ok = seek_subimage(0, 0);
     if (ok)
         newspec = spec();

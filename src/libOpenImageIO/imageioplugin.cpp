@@ -206,7 +206,7 @@ catalog_plugin(const std::string& format_name,
         ImageInput* name##_input_imageio_create();                             \
         extern const char* name##_input_extensions[];                          \
         extern const char* name##_imageio_library_version();
-
+#if 0
 PLUGENTRY(bmp);
 PLUGENTRY(cineon);
 PLUGENTRY(dds);
@@ -238,7 +238,9 @@ PLUGENTRY(tiff);
 PLUGENTRY(targa);
 PLUGENTRY(webp);
 PLUGENTRY(zfile);
-
+#else
+PLUGENTRY(tiff);
+#endif
 
 #endif  // defined(EMBED_PLUGINS)
 
@@ -266,7 +268,7 @@ catalog_builtin_plugins()
             #name, (ImageInput::Creator)name##_input_imageio_create,     \
             name##_input_extensions, nullptr, nullptr,                   \
             name##_imageio_library_version())
-
+#if 0
 #if !defined(DISABLE_BMP)
     DECLAREPLUG (bmp);
 #endif
@@ -381,6 +383,9 @@ catalog_builtin_plugins()
 #endif
 #if !defined(DISABLE_ZFILE)
     DECLAREPLUG (zfile);
+#endif
+#else
+    DECLAREPLUG (tiff);
 #endif
 #endif
 }

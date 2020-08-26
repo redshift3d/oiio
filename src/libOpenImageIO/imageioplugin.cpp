@@ -239,7 +239,9 @@ PLUGENTRY(targa);
 PLUGENTRY(webp);
 PLUGENTRY(zfile);
 #else
+#ifndef REDSHIFT_OIIO_TIFF_DISABLED
 PLUGENTRY(tiff);
+#endif
 #endif
 
 #endif  // defined(EMBED_PLUGINS)
@@ -385,7 +387,9 @@ catalog_builtin_plugins()
     DECLAREPLUG (zfile);
 #endif
 #else
+#ifndef REDSHIFT_OIIO_TIFF_DISABLED
     DECLAREPLUG (tiff);
+#endif
 #endif
 #endif
 }

@@ -15,7 +15,10 @@
 #include <OpenImageIO/strutil.h>
 #include <OpenImageIO/typedesc.h>
 
+#if !defined(REDSHIFT_OIIO_TIFF_DISABLED)
 #include "exif.h"
+#endif
+
 #include "imageio_pvt.h"
 
 #if USE_EXTERNAL_PUGIXML
@@ -569,6 +572,13 @@ ImageSpec::channelindex(string_view name) const
 }
 
 
+#ifdef REDSHIFT_OIIO_TIFF_DISABLED
+std::string
+ImageSpec::metadata_val(const ParamValue& p, bool human)
+{
+	return "";
+}
+#else
 
 std::string
 pvt::explain_justprint(const ParamValue& p, const void* extradata)
@@ -862,6 +872,7 @@ ImageSpec::metadata_val(const ParamValue& p, bool human)
 
     return out;
 }
+#endif
 
 
 
@@ -951,7 +962,13 @@ format_offset(const ImageSpec& spec, int x, int y, int z)
 }
 
 
-
+#ifdef REDSHIFT_OIIO_TIFF_DISABLED
+static std::string
+spec_to_xml(const ImageSpec& spec, ImageSpec::SerialVerbose verbose)
+{
+	return "";
+}
+#else
 static std::string
 spec_to_xml(const ImageSpec& spec, ImageSpec::SerialVerbose verbose)
 {
@@ -1016,7 +1033,7 @@ spec_to_xml(const ImageSpec& spec, ImageSpec::SerialVerbose verbose)
     doc.print(result, "");
     return result.str();
 }
-
+#endif
 
 
 std::string

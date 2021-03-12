@@ -134,8 +134,17 @@ OIIO_EXPORT const char * tiff_output_extensions[] = {
 OIIO_PLUGIN_EXPORTS_END
 
 
+// REDSHIFT PATCH BEGIN
+#if 0 // Original code
 
 extern std::string & oiio_tiff_last_error ();
+
+#else
+    // KK Return a string copy instead of a reference to prevent state sharing
+    // All callers in this module do not modify the state this should be safe
+    extern std::string oiio_tiff_last_error ();
+#endif
+// REDSHIFT PATCH END
 extern void oiio_tiff_set_error_handler ();
 
 

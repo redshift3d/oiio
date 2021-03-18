@@ -90,6 +90,33 @@ set (libOpenImageIO_srcs
 
 add_library (OpenImageIO ${libOpenImageIO_srcs})
 
+# Redshift: library naming conventions
+if (REDSHIFT_USE_LIB_POSTFIX)
+    set (REDSHIFT_TOOLSET_POSTFIX "")
+    if (CMAKE_GENERATOR_TOOLSET STREQUAL "v140")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc140")
+    elseif (CMAKE_GENERATOR_TOOLSET STREQUAL "v100")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc100")
+    elseif (CMAKE_GENERATOR_TOOLSET STREQUAL "v90")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc90")
+    else()
+        message( FATAL_ERROR "REDSHIFT_USE_LIB_POSTFIX only supports v140, v100 and v90 toolsets. Current toolset is ${CMAKE_GENERATOR_TOOLSET}" )
+    endif()
+
+    if (REDSHIFT_TOOLSET_POSTFIX)
+        set (REDSHIFT_LIB_POSTFIX "-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${OIIO_VERSION_RELEASE_TYPE}-${REDSHIFT_TOOLSET_POSTFIX}")
+        message(STATUS "REDSHIFT_LIB_POSTFIX: ${REDSHIFT_LIB_POSTFIX}")
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            DEBUG_POSTFIX ${REDSHIFT_LIB_POSTFIX}-d
+            RELEASE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELWITHDEBINFO_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELMINSIZE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+        )
+    endif()
+endif()
+#
+
 # If the 'EMBEDPLUGINS' option is set, we want to compile the source for
 # all the plugins into libOpenImageIO.
 if (EMBEDPLUGINS)

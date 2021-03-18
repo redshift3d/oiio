@@ -211,10 +211,8 @@ foreach (COMPONENT ${_openexr_components})
     string (TOUPPER ${COMPONENT} UPPERCOMPONENT)
     # First try with the version embedded
     find_library (OPENEXR_${UPPERCOMPONENT}_LIBRARY
-                  NAMES ${COMPONENT}-${OPENEXR_VERSION_MAJOR}_${OPENEXR_VERSION_MINOR}
-                        ${COMPONENT}
-                        ${COMPONENT}-${OPENEXR_VERSION_MAJOR}_${OPENEXR_VERSION_MINOR}_d
-                        ${COMPONENT}_d
+                  NAMES ${COMPONENT}-${OPENEXR_VERSION_MAJOR}_${OPENEXR_VERSION_MINOR}${OPENEXR_CUSTOM_LIB_SUFFIX}
+                        ${COMPONENT}${OPENEXR_CUSTOM_LIB_SUFFIX}
                   HINTS ${OPENEXR_LIBRARY_DIR} $ENV{OPENEXR_LIBRARY_DIR}
                         ${GENERIC_LIBRARY_PATHS} )
 endforeach ()

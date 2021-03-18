@@ -243,6 +243,21 @@ endif()
 
 install_targets (OpenImageIO)
 
+# Redshift: Install PDB files
+IF(MSVC)
+  INSTALL ( 
+    #FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,DEBUG_POSTFIX>.pdb
+    FILES $<TARGET_PDB_FILE:${PROJECT_NAME}>
+    DESTINATION bin
+    CONFIGURATIONS Debug RelWithDebInfo
+    )
+  #INSTALL ( 
+  #  FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,RELWITHDEBINFO_POSTFIX>.pdb
+  #  DESTINATION bin
+  #  CONFIGURATIONS RelWithDebInfo
+  #  )
+ENDIF(MSVC)
+
 
 # Testing
 

@@ -2775,4 +2775,8 @@ void debug (const char* fmt, const T1& v1, const Args&... args)
 // to force correct linkage on some systems
 OIIO_API void _ImageIO_force_link ();
 
+// Redshift
+OIIO_API void redshift_init ();
+OIIO_API void redshift_shutdown ();
+
 OIIO_NAMESPACE_END

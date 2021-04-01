@@ -52,6 +52,14 @@ else ()
     if (NOT USE_STD_REGEX)
         list (APPEND Boost_COMPONENTS regex)
     endif ()
+
+    ##########
+    # Redshift
+    if (MSVC)
+    list (APPEND Boost_COMPONENTS locale)
+    endif ()
+    ##########
+
     # The FindBoost.cmake interface is broken if it uses boost's installed
     # cmake output (e.g. boost 1.70.0, cmake <= 3.14). Specifically it fails
     # to set the expected variables printed below. So until that's fixed

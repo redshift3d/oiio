@@ -980,5 +980,39 @@ wrap_mirror(int& coord, int origin, int width)
     return true;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// Redshift
+#if defined(_MSC_VER)
+OIIO_NAMESPACE_END
+
+#include <boost/locale.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
+
+#include <OpenEXR/ImfThreading.h>
+
+OIIO_NAMESPACE_BEGIN
+
+std::locale old_locale;
+void redshift_init ()
+{
+    //imbue a utf8 locale (so that narrow to wide string conversion in boost::filesystem happens as UTF8 -> UTF16
+    old_locale = boost::filesystem::path::imbue(boost::locale::generator().generate(""));
+}
+
+void redshift_shutdown ()
+{
+    //shutdown exr threads
+    int ret = Imf::globalThreadCount();
+    Imf::setGlobalThreadCount(0);
+
+    //restore original imbued locale
+    boost::filesystem::path::imbue(old_locale);
+}
+#else //defined(_MSC_VER)
+void redshift_init () {}
+void redshift_shutdown () {}
+#endif //defined(_MSC_VER)
+//////////////////////////////////////////////////////////////////////////
 
 OIIO_NAMESPACE_END

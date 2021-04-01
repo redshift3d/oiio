@@ -16,6 +16,9 @@
 
 #include "imageio_pvt.h"
 
+// REDSHIFT PATCH BEGIN: Disable ZFILE support
+#define DISABLE_ZFILE
+// REDSHIFT PATCH END
 
 OIIO_NAMESPACE_BEGIN
 using namespace pvt;

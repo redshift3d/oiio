@@ -120,7 +120,7 @@ if (REDSHIFT_USE_LIB_PREFIX)
     if (NOT MSVC)
         set_target_properties (OpenImageIO
             PROPERTIES
-            PREFIX libredshift)
+            PREFIX libRedshift)
     endif ()
 endif ()
 #

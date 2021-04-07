@@ -115,6 +115,14 @@ if (REDSHIFT_USE_LIB_POSTFIX)
         )
     endif()
 endif()
+
+if (REDSHIFT_USE_LIB_PREFIX)
+    if (NOT MSVC)
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            PREFIX libredshift)
+    endif ()
+endif ()
 #
 
 # If the 'EMBEDPLUGINS' option is set, we want to compile the source for

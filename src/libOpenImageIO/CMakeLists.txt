@@ -123,6 +123,10 @@ if (REDSHIFT_USE_LIB_PREFIX)
             PREFIX libRedshift)
     endif ()
 endif ()
+# Redshift: remove dependency on dbgeng.dll
+if (MSVC)
+    add_definitions ("-DBOOST_STACKTRACE_USE_NOOP=1")
+endif()
 #
 
 # If the 'EMBEDPLUGINS' option is set, we want to compile the source for

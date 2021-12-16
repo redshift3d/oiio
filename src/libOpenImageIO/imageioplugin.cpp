@@ -237,6 +237,7 @@ catalog_plugin(const std::string& format_name,
         extern const char* name##_output_extensions[]; \
         extern const char* name##_imageio_library_version();
 
+#if 0
 PLUGENTRY(bmp);
 PLUGENTRY(cineon);
 PLUGENTRY(dds);
@@ -269,7 +270,11 @@ PLUGENTRY(tiff);
 PLUGENTRY(targa);
 PLUGENTRY(webp);
 PLUGENTRY(zfile);
-
+#else
+#ifndef REDSHIFT_OIIO_TIFF_DISABLED
+PLUGENTRY(tiff);
+#endif
+#endif
 
 #endif  // defined(EMBED_PLUGINS)
 
@@ -304,6 +309,7 @@ catalog_builtin_plugins()
             name##_output_extensions,                                    \
             name##_imageio_library_version())
 
+#if 0
 #if !defined(DISABLE_BMP)
     DECLAREPLUG (bmp);
 #endif
@@ -421,6 +427,11 @@ catalog_builtin_plugins()
 #endif
 #if !defined(DISABLE_ZFILE)
     DECLAREPLUG (zfile);
+#endif
+#else
+#ifndef REDSHIFT_OIIO_TIFF_DISABLED
+    DECLAREPLUG (tiff);
+#endif
 #endif
 #endif
 }

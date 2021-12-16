@@ -41,9 +41,19 @@
 #ifndef FMT_USE_GRISU
 #    define FMT_USE_GRISU 1
 #endif
+
+#ifdef REDSHIFT_PATCH_OSL
+    #include "fmt/ostream.h"
+    #include "fmt/format.h"
+    #include "fmt/printf.h"
+#else
+
 #include "detail/fmt/ostream.h"
 #include "detail/fmt/format.h"
 #include "detail/fmt/printf.h"
+
+#endif
+
 #if OIIO_GNUC_VERSION >= 70000
 #    pragma GCC diagnostic pop
 #endif

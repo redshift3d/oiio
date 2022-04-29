@@ -641,6 +641,12 @@ PSDInput::seek_subimage(int subimage, int miplevel)
     if (subimage < 0 || subimage >= m_subimage_count)
         return false;
 
+    //////////////////////////////////////////////////////////////////////////
+    // Redshift Patch KK: Skip invalid/non-raster layers
+    if (m_specs[subimage].width == 0 || m_specs[subimage].height == 0)
+        return false;
+    //////////////////////////////////////////////////////////////////////////
+
     m_subimage = subimage;
     m_spec     = m_specs[subimage];
     return true;

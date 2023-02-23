@@ -526,7 +526,7 @@ inline void cpuid (int info[4], int infoType, int extra)
 {
     // Implementation cribbed from Halide (http://halide-lang.org), which
     // cribbed it from ISPC (https://github.com/ispc/ispc).
-#if (defined(_WIN32) || defined(__i386__) || defined(__x86_64__))
+#if (defined(_WIN32) || defined(__i386__) || defined(__x86_64__)) && !defined(_M_ARM64)
 # ifdef _MSC_VER
     __cpuidex(info, infoType, extra);
 # elif defined(__x86_64__)

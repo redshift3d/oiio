@@ -90,7 +90,7 @@ set (libOpenImageIO_srcs
 
 add_library (OpenImageIO ${libOpenImageIO_srcs})
 
-# Redshift: library naming conventions
+# Redshift: library naming conventions (OLD CONVENTION)
 if (REDSHIFT_USE_LIB_POSTFIX)
     set (REDSHIFT_TOOLSET_POSTFIX "")
     if (CMAKE_GENERATOR_TOOLSET STREQUAL "v140")
@@ -115,6 +115,27 @@ if (REDSHIFT_USE_LIB_POSTFIX)
         )
     endif()
 endif()
+
+# Redshift: library naming conventions (OLD CONVENTION)
+if (REDSHIFT_USE_LIB_POSTFIX_NEW)
+    set (REDSHIFT_ARCHITECTURE_POSTFIX "x64")
+    if (CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
+        set (REDSHIFT_ARCHITECTURE_POSTFIX "arm64")
+    endif()
+
+    if (REDSHIFT_ARCHITECTURE_POSTFIX)
+        set (REDSHIFT_LIB_POSTFIX "-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${OIIO_VERSION_RELEASE_TYPE}-${REDSHIFT_ARCHITECTURE_POSTFIX}")
+        message(STATUS "REDSHIFT_LIB_POSTFIX: ${REDSHIFT_LIB_POSTFIX}")
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            DEBUG_POSTFIX ${REDSHIFT_LIB_POSTFIX}-d
+            RELEASE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELWITHDEBINFO_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELMINSIZE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+        )
+    endif()
+endif()
+
 
 if (REDSHIFT_USE_LIB_PREFIX)
     if (NOT MSVC)

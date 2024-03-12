@@ -274,6 +274,9 @@ PLUGENTRY(zfile);
 #ifndef REDSHIFT_OIIO_TIFF_DISABLED
 PLUGENTRY(tiff);
 #endif
+#ifndef REDSHIFT_OIIO_JPEG_DISABLED
+PLUGENTRY(jpeg);
+#endif
 #endif
 
 #endif  // defined(EMBED_PLUGINS)
@@ -431,6 +434,9 @@ catalog_builtin_plugins()
 #else
 #ifndef REDSHIFT_OIIO_TIFF_DISABLED
     DECLAREPLUG (tiff);
+#endif
+#ifndef REDSHIFT_OIIO_JPEG_DISABLED
+    DECLAREPLUG (jpeg);
 #endif
 #endif
 #endif

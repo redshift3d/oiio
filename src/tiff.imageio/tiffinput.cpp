@@ -24,6 +24,9 @@
 
 #include "imageio_pvt.h"
 
+// REDSHIFT PATCH BEGIN
+#include <boost/thread/thread.hpp>	// For boost::thread::id
+// REDSHIFT PATCH END
 
 // General TIFF information:
 // TIFF 6.0 spec:
@@ -516,9 +519,8 @@ OIIO_PLUGIN_EXPORTS_END
 
 
 #if OIIO_TIFFLIB_VERSION < 40500
-// For TIFF 4.4 and earlier, we need someplace to store an error message from
-// the global TIFF error handler. To avoid thread oddities, we have the
-// storage area buffering error messages be thread-specific.
+// REDSHIFT PATCH BEGIN
+#if 0 // Original code
 static thread_local std::string thread_error_msg;
 static atomic_int handler_set;
 static spin_mutex handler_mutex;
@@ -539,6 +541,42 @@ my_error_handler(const char* /*str*/, const char* format, va_list ap)
     oiio_tiff_last_error() = Strutil::vsprintf(format, ap);
 }
 
+#else // Redshift KK: thread-specifc error string deallocation crashes on C4D/Linux when the plugin has unloaded
+static atomic_int handler_set;
+static spin_mutex handler_mutex;
+
+// Maintain a string per thread inside std::map which has deterministic deallocation
+typedef std::map<boost::thread::id, std::string> threadid_string_map_t;
+static threadid_string_map_t tiff_thread_error_messages;
+static spin_mutex tiff_error_mutex;
+
+// Return a copy for queries
+std::string
+oiio_tiff_last_error ()
+{
+    boost::thread::id tid = boost::this_thread::get_id();
+    std::string res;
+    {
+        spin_lock lock (tiff_error_mutex);
+        threadid_string_map_t::iterator it = tiff_thread_error_messages.find(tid);
+        if(it!=tiff_thread_error_messages.end())
+            res = it->second;
+    }
+    return res;
+}
+
+static void
+my_error_handler (const char *str, const char *format, va_list ap)
+{
+    boost::thread::id tid = boost::this_thread::get_id();
+    std::string error_msg = Strutil::vformat (format, ap);
+    {
+        spin_lock lock(tiff_error_mutex);
+        tiff_thread_error_messages[tid] = error_msg;
+    }
+}
+#endif
+// REDSHIFT PATCH END
 
 
 void

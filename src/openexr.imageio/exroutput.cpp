@@ -807,7 +807,10 @@ OpenEXROutput::spec_to_header(ImageSpec& spec, int subimage,
 
     // Deal with all other params
     for (const auto& p : spec.extra_attribs)
-        put_parameter(p.name().string(), p.type(), p.data(), header);
+   {
+        std::string s = p.name().c_str(); 
+        put_parameter(s, p.type(), p.data(), header);
+   }
 
     // Multi-part EXR files required to have a name. Make one up if not
     // supplied.

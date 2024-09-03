@@ -78,6 +78,66 @@ set (libOpenImageIO_srcs
 
 add_library (OpenImageIO ${libOpenImageIO_srcs})
 
+# Redshift: library naming conventions (OLD CONVENTION)
+if (REDSHIFT_USE_LIB_POSTFIX)
+    set (REDSHIFT_TOOLSET_POSTFIX "")
+    if (CMAKE_GENERATOR_TOOLSET STREQUAL "v140")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc140")
+    elseif (CMAKE_GENERATOR_TOOLSET STREQUAL "v100")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc100")
+    elseif (CMAKE_GENERATOR_TOOLSET STREQUAL "v90")
+        set (REDSHIFT_TOOLSET_POSTFIX "vc90")
+    else()
+        message( FATAL_ERROR "REDSHIFT_USE_LIB_POSTFIX only supports v140, v100 and v90 toolsets. Current toolset is ${CMAKE_GENERATOR_TOOLSET}" )
+    endif()
+
+    if (REDSHIFT_TOOLSET_POSTFIX)
+        set (REDSHIFT_LIB_POSTFIX "-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${OIIO_VERSION_RELEASE_TYPE}-${REDSHIFT_TOOLSET_POSTFIX}")
+        message(STATUS "REDSHIFT_LIB_POSTFIX: ${REDSHIFT_LIB_POSTFIX}")
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            DEBUG_POSTFIX ${REDSHIFT_LIB_POSTFIX}-d
+            RELEASE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELWITHDEBINFO_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELMINSIZE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+        )
+    endif()
+endif()
+
+# Redshift: library naming conventions (OLD CONVENTION)
+if (REDSHIFT_USE_LIB_POSTFIX_NEW)
+    set (REDSHIFT_ARCHITECTURE_POSTFIX "x64")
+    if (CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
+        set (REDSHIFT_ARCHITECTURE_POSTFIX "arm64")
+    endif()
+
+    if (REDSHIFT_ARCHITECTURE_POSTFIX)
+        set (REDSHIFT_LIB_POSTFIX "-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${OIIO_VERSION_RELEASE_TYPE}-${REDSHIFT_ARCHITECTURE_POSTFIX}")
+        message(STATUS "REDSHIFT_LIB_POSTFIX: ${REDSHIFT_LIB_POSTFIX}")
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            DEBUG_POSTFIX ${REDSHIFT_LIB_POSTFIX}-d
+            RELEASE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELWITHDEBINFO_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+            RELMINSIZE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
+        )
+    endif()
+endif()
+
+
+if (REDSHIFT_USE_LIB_PREFIX)
+    if (NOT MSVC)
+        set_target_properties (OpenImageIO
+            PROPERTIES
+            PREFIX libRedshift)
+    endif ()
+endif ()
+# Redshift: remove dependency on dbgeng.dll
+if (MSVC)
+    add_definitions ("-DBOOST_STACKTRACE_USE_NOOP=1")
+endif()
+#
+
 # If the 'EMBEDPLUGINS' option is set, we want to compile the source for
 # all the plugins into libOpenImageIO.
 if (EMBEDPLUGINS)
@@ -228,6 +288,21 @@ endif ()
 set_target_properties (OpenImageIO PROPERTIES LINK_FLAGS ${OpenImageIO_LINK_FLAGS})
 
 install_targets (OpenImageIO)
+
+# Redshift: Install PDB files
+IF(MSVC)
+  INSTALL ( 
+    #FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,DEBUG_POSTFIX>.pdb
+    FILES $<TARGET_PDB_FILE:${PROJECT_NAME}>
+    DESTINATION bin
+    CONFIGURATIONS Debug RelWithDebInfo
+    )
+  #INSTALL ( 
+  #  FILES ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OpenImageIO$<TARGET_PROPERTY:OpenImageIO,RELWITHDEBINFO_POSTFIX>.pdb
+  #  DESTINATION bin
+  #  CONFIGURATIONS RelWithDebInfo
+  #  )
+ENDIF(MSVC)
 
 
 # Testing

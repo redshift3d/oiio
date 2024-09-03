@@ -55,6 +55,16 @@ if (MSVC)
     endif ()
 endif ()
 
+
+##########
+# Redshift
+if (MSVC)
+	# Used on windows to make boost::filesystem use utf-8. See redshift_init()
+    list (APPEND Boost_COMPONENTS locale)
+endif ()
+##########
+
+
 set (Boost_COMPONENTS thread)
 if (NOT USE_STD_FILESYSTEM)
     list (APPEND Boost_COMPONENTS filesystem)

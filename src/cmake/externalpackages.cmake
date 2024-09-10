@@ -55,6 +55,10 @@ if (MSVC)
     endif ()
 endif ()
 
+set (Boost_COMPONENTS thread)
+if (NOT USE_STD_FILESYSTEM)
+    list (APPEND Boost_COMPONENTS filesystem)
+endif ()
 
 ##########
 # Redshift
@@ -64,11 +68,6 @@ if (MSVC)
 endif ()
 ##########
 
-
-set (Boost_COMPONENTS thread)
-if (NOT USE_STD_FILESYSTEM)
-    list (APPEND Boost_COMPONENTS filesystem)
-endif ()
 message (STATUS "Boost_COMPONENTS = ${Boost_COMPONENTS}")
 # The FindBoost.cmake interface is broken if it uses boost's installed
 # cmake output (e.g. boost 1.70.0, cmake <= 3.14). Specifically it fails

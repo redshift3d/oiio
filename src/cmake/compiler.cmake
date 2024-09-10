@@ -401,6 +401,10 @@ endif ()
 #
 cmake_push_check_state ()
 set (CMAKE_REQUIRED_DEFINITIONS ${CSTD_FLAGS})
+
+## Redshift patch: We need the ability to force boost filesystem so we can support utf-8 paths on Windows
+if (NOT DEFINED USE_STD_FILESYSTEM)
+
 check_cxx_source_compiles("#include <filesystem>
       int main() { std::filesystem::path p; return 0; }"
       USE_STD_FILESYSTEM)
@@ -408,6 +412,9 @@ if (USE_STD_FILESYSTEM AND GCC_VERSION AND GCC_VERSION VERSION_LESS 9.0)
     message (STATUS "Excluding USE_STD_FILESYSTEM because gcc is ${GCC_VERSION}")
     set (USE_STD_FILESYSTEM OFF)
 endif ()
+
+endif ()
+
 if (USE_STD_FILESYSTEM)
     # Note: std::filesystem seems unreliable for gcc until 9
     message (STATUS "Compiler supports std::filesystem")

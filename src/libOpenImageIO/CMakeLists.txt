@@ -107,7 +107,8 @@ endif()
 # Redshift: library naming conventions (OLD CONVENTION)
 if (REDSHIFT_USE_LIB_POSTFIX_NEW)
     set (REDSHIFT_ARCHITECTURE_POSTFIX "x64")
-    if (CMAKE_GENERATOR_PLATFORM STREQUAL "ARM64")
+
+    if (CMAKE_GENERATOR_PLATFORM MATCHES "ARM64.*")
         set (REDSHIFT_ARCHITECTURE_POSTFIX "arm64")
     endif()
 
@@ -224,11 +225,13 @@ target_link_libraries (OpenImageIO
             ${BZIP2_LIBRARIES}
             ZLIB::ZLIB
             $<TARGET_NAME_IF_EXISTS:Boost::thread>
+            $<TARGET_NAME_IF_EXISTS:Boost::filesystem>
             ${CMAKE_DL_LIBS}
         )
 
 if (WIN32)
     target_link_libraries (OpenImageIO PRIVATE psapi)
+    target_link_libraries (OpenImageIO PRIVATE $<TARGET_NAME_IF_EXISTS:Boost::locale>)
 endif()
 
 if (MINGW)

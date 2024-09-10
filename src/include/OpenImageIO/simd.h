@@ -112,12 +112,13 @@
 
 #if defined(__CUDA_ARCH__)
     // Cuda -- don't include any of these headers
+// REDSHIFT PATCH: NEON is also supported in Win32, so check before _WIN32
+#elif defined(__ARM_NEON__) && !defined(OIIO_NO_NEON)
+#  include <arm_neon.h>
 #elif defined(_WIN32)
 #  include <intrin.h>
 #elif defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__)) || defined(__e2k__)
 #  include <x86intrin.h>
-#elif defined(__GNUC__) && defined(__ARM_NEON__) && !defined(OIIO_NO_NEON)
-#  include <arm_neon.h>
 #endif
 
 // Disable SSE for 32 bit Windows platforms, it's unreliable and hard for us

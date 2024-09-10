@@ -60,28 +60,6 @@ set_target_properties(OpenImageIO_Util
                          POSITION_INDEPENDENT_CODE ON
                      )
 
-# Redshift: library naming conventions (OLD CONVENTION)
-if (REDSHIFT_USE_LIB_POSTFIX_NEW)
-    set (REDSHIFT_ARCHITECTURE_POSTFIX "x64")
-
-    if (CMAKE_GENERATOR_PLATFORM MATCHES "ARM64.*")
-        set (REDSHIFT_ARCHITECTURE_POSTFIX "arm64")
-    endif()
-
-    if (REDSHIFT_ARCHITECTURE_POSTFIX)
-        set (REDSHIFT_LIB_POSTFIX "-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${OIIO_VERSION_RELEASE_TYPE}-${REDSHIFT_ARCHITECTURE_POSTFIX}")
-        message(STATUS "REDSHIFT_LIB_POSTFIX: ${REDSHIFT_LIB_POSTFIX}")
-        set_target_properties (OpenImageIO_Util
-            PROPERTIES
-            DEBUG_POSTFIX ${REDSHIFT_LIB_POSTFIX}-d
-            RELEASE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
-            RELWITHDEBINFO_POSTFIX ${REDSHIFT_LIB_POSTFIX}
-            RELMINSIZE_POSTFIX ${REDSHIFT_LIB_POSTFIX}
-        )
-    endif()
-endif()
-
-
 if (CMAKE_COMPILER_IS_GNUCC AND NOT ${GCC_VERSION} VERSION_LESS 9.0)
     set_property (SOURCE SHA1.cpp
                   APPEND PROPERTY COMPILE_OPTIONS -Wno-stringop-truncation)

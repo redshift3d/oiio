@@ -128,11 +128,6 @@
 #define OIIO_NO_SSE 1
 #endif
 
-// Added by Panos: disable it for Arm64, too - on Windows
-#if defined(_M_ARM64)
-#define OIIO_NO_SSE 1
-#endif
-
 #if (defined(__SSE2__) || (_MSC_VER >= 1300 && !_M_CEE_PURE)) && !defined(OIIO_NO_SSE)
 #  if (defined(__SSE4_1__) || defined(__SSE4_2__))
 #    define OIIO_SIMD_SSE 4

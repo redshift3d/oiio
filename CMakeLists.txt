@@ -157,10 +157,15 @@ list (APPEND CMAKE_MODULE_PATH
       "${PROJECT_SOURCE_DIR}/src/cmake/modules"
       "${PROJECT_SOURCE_DIR}/src/cmake")
 
-# Redshft Patch
-# Add our Prefix to Linux/OSX builds
+# Redshift Patch
+# Add our library prefix
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_SHARED_LIBRARY_PREFIX libRedshift)
+    set(CMAKE_STATIC_LIBRARY_PREFIX libRedshift)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(CMAKE_SHARED_LIBRARY_PREFIX Redshift)
+    set(CMAKE_STATIC_LIBRARY_PREFIX Redshift)
+    set(CMAKE_IMPORT_LIBRARY_PREFIX Redshift)
 endif ()
 
 

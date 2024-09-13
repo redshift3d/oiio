@@ -161,10 +161,9 @@ list (APPEND CMAKE_MODULE_PATH
 # Add our library prefix
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_SHARED_LIBRARY_PREFIX libRedshift)
-    set(CMAKE_STATIC_LIBRARY_PREFIX libRedshift)
+    # Note KK: Do not set(CMAKE_STATIC_LIBRARY_PREFIX libRedshift). This will cause a link error on linux (incorrect -llibm instead of -lm)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(CMAKE_SHARED_LIBRARY_PREFIX Redshift)
-    set(CMAKE_STATIC_LIBRARY_PREFIX Redshift)
     set(CMAKE_IMPORT_LIBRARY_PREFIX Redshift)
 endif ()
 

@@ -44,6 +44,15 @@
 ///
 ///
 
+// Redshift Patch Begin
+// Ensure a pure static build with no exported symbols
+#if defined(OIIO_STATIC_DEFINE)
+#    define OIIO_IMPORT
+#    define OIIO_EXPORT
+#    define OIIO_LOCAL
+#else
+// Redshift Patch End
+
 #if defined(_WIN32) || defined(__CYGWIN__)
 #    ifdef OIIO_STATIC_DEFINE
 #        define OIIO_IMPORT
@@ -58,6 +67,10 @@
 #    define OIIO_EXPORT __attribute__((visibility("default")))
 #    define OIIO_LOCAL __attribute__((visibility("hidden")))
 #endif
+
+// Redshift Patch Begin
+#endif
+// Redshift Patch End
 
 #if defined(OpenImageIO_EXPORTS)
 #    define OIIO_API OIIO_EXPORT

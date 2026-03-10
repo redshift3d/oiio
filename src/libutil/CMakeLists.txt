@@ -113,7 +113,7 @@ function (setup_oiio_util_library targetname)
                           PROPERTIES
                              VERSION     ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
                              SOVERSION   ${SOVERSION}
-                             OUTPUT_NAME ${targetname}${OIIO_LIBNAME_SUFFIX}
+                             OUTPUT_NAME Redshift${targetname}${OIIO_LIBNAME_SUFFIX}
                              POSITION_INDEPENDENT_CODE ON
                          )
 

@@ -621,6 +621,22 @@ PSDInput::open(const std::string& name, ImageSpec& newspec)
     // Setup ImageSpecs and m_channels
     setup();
 
+	//////////////////////////////////////////////////////////////////////////
+	// Redshift
+	//
+	// Add attribute 'oiio:subimagename' to subimage specs
+	if(m_layer_mask_info.length > 0) {
+		LayerMaskInfo::LayerInfo &layer_info = m_layer_mask_info.layer_info;
+		if(layer_info.length != 0) {
+			m_specs[0].attribute ("oiio:subimagename", "Default Composite");
+			for (int16_t layer_nbr = 0; layer_nbr < layer_info.layer_count; ++layer_nbr) {
+				Layer &layer = m_layers[layer_nbr];
+				m_specs[layer_nbr+1].attribute ("oiio:subimagename", layer.name);
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+
     bool ok = seek_subimage(0, 0);
     if (ok)
         newspec = spec();
@@ -666,6 +682,12 @@ PSDInput::seek_subimage(int subimage, int miplevel)
         return true;  // Early return when not changing subimages
     if (subimage < 0 || subimage >= m_subimage_count)
         return false;
+
+    //////////////////////////////////////////////////////////////////////////
+    // Redshift Patch KK: Skip invalid/non-raster layers
+    if (m_specs[subimage].width == 0 || m_specs[subimage].height == 0)
+        return false;
+    //////////////////////////////////////////////////////////////////////////
 
     m_subimage = subimage;
     m_spec     = m_specs[subimage];

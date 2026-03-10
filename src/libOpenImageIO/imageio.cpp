@@ -1441,5 +1441,31 @@ image_span_within_span(const image_span<const std::byte>& ispan,
             && last < contiguous.data() + contiguous.size());
 }
 
+//////////////////////////////////////////////////////////////////////////
+// Redshift
+#if defined(_MSC_VER)
+OIIO_NAMESPACE_END
+
+#include <OpenEXR/ImfThreading.h>
+
+OIIO_NAMESPACE_BEGIN
+
+std::locale old_locale;
+void redshift_init ()
+{
+
+}
+
+void redshift_shutdown ()
+{
+    //shutdown exr threads
+    int ret = Imf::globalThreadCount();
+    Imf::setGlobalThreadCount(0);
+}
+#else //defined(_MSC_VER)
+void redshift_init () {}
+void redshift_shutdown () {}
+#endif //defined(_MSC_VER)
+//////////////////////////////////////////////////////////////////////////
 
 OIIO_NAMESPACE_3_1_END

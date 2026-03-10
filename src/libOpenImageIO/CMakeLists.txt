@@ -79,6 +79,10 @@ else ()
     add_library (OpenImageIO ${libOpenImageIO_srcs})
 endif ()
 
+if (MSVC)
+    add_definitions ("-DBOOST_STACKTRACE_USE_NOOP=1")
+endif()
+
 # If the 'EMBEDPLUGINS' option is set, we want to compile the source for
 # all the plugins into libOpenImageIO.
 if (EMBEDPLUGINS)
@@ -219,7 +223,7 @@ set_target_properties(OpenImageIO
                       PROPERTIES
                          VERSION     ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
                          SOVERSION   ${SOVERSION}
-                         OUTPUT_NAME OpenImageIO${OIIO_LIBNAME_SUFFIX}
+                         OUTPUT_NAME RedshiftOpenImageIO${OIIO_LIBNAME_SUFFIX}
                          POSITION_INDEPENDENT_CODE ON
                         # UNITY_BUILD_BATCH_SIZE 4
                      )

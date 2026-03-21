@@ -20,6 +20,8 @@
 #    include <sys/ioctl.h>
 #    include <sys/sysinfo.h>
 #    include <unistd.h>
+#elif defined(__EMSCRIPTEN__)
+#    include <unistd.h>
 #endif
 
 #if defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__NetBSD__) \
@@ -270,7 +272,7 @@ Sysutil::this_program_path()
     size_t cb = sizeof(filename);
     int r     = 1;
     sysctl(mib, 4, filename, &cb, NULL, 0);
-#elif defined(__GNU__) || defined(__OpenBSD__) || defined(_WIN32)
+#elif defined(__GNU__) || defined(__OpenBSD__) || defined(_WIN32) || defined(__EMSCRIPTEN__)
     int r = 0;
 #else
     // No idea what platform this is
